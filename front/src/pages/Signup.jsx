@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { EyeIcon, EyeSlashIcon, SparklesIcon, InformationCircleIcon } from '@heroicons/react/24/outline'
 import { useNavigate } from 'react-router-dom'
+import { authAPI } from '../utils/api'
+import { useLanguage } from '../contexts/LanguageContext'
 
 const googleSvg = (
   <svg className="h-5 w-5" viewBox="0 0 48 48"><g><path fill="#4285F4" d="M24 9.5c3.54 0 6.7 1.22 9.19 3.23l6.85-6.85C36.68 2.39 30.77 0 24 0 14.82 0 6.71 5.1 2.69 12.44l7.98 6.2C12.13 13.09 17.62 9.5 24 9.5z"/><path fill="#34A853" d="M46.1 24.55c0-1.64-.15-3.22-.43-4.74H24v9.01h12.42c-.54 2.9-2.18 5.36-4.65 7.02l7.18 5.59C43.98 37.13 46.1 31.36 46.1 24.55z"/><path fill="#FBBC05" d="M10.67 28.65c-1.01-2.99-1.01-6.21 0-9.2l-7.98-6.2C.7 17.1 0 20.46 0 24c0 3.54.7 6.9 1.97 10.1l7.98-6.2z"/><path fill="#EA4335" d="M24 48c6.48 0 11.93-2.14 15.9-5.82l-7.18-5.59c-2.01 1.35-4.6 2.15-8.72 2.15-6.38 0-11.87-3.59-14.33-8.74l-7.98 6.2C6.71 42.9 14.82 48 24 48z"/></g></svg>
@@ -53,68 +55,60 @@ export default function Signup({ onSignupSuccess }) {
   const [showTermsTooltip, setShowTermsTooltip] = useState(false)
   const [socialToast, setSocialToast] = useState('')
   const navigate = useNavigate()
+  const { t, language, changeLanguage } = useLanguage()
 
   function validate() {
     const errs = {}
-    if (!formData.firstName) errs.firstName = 'First name is required.'
-    if (!formData.lastName) errs.lastName = 'Last name is required.'
-    if (!formData.email) errs.email = 'Email is required.'
-    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(formData.email)) errs.email = 'Invalid email address.'
-    if (!formData.password) errs.password = 'Password is required.'
-    else if (formData.password.length < 6) errs.password = 'Password must be at least 6 characters.'
-    if (!formData.confirmPassword) errs.confirmPassword = 'Please confirm your password.'
-    else if (formData.password !== formData.confirmPassword) errs.confirmPassword = 'Passwords do not match.'
-    if (!formData.agreeToTerms) errs.agreeToTerms = 'You must agree to the terms.'
+    if (!formData.firstName) errs.firstName = t('firstNameRequired')
+    if (!formData.lastName) errs.lastName = t('lastNameRequired')
+    if (!formData.email) errs.email = t('emailRequired')
+    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(formData.email)) errs.email = t('invalidEmail')
+    if (!formData.password) errs.password = t('passwordRequired')
+    else if (formData.password.length < 6) errs.password = t('passwordMinLength')
+    if (!formData.confirmPassword) errs.confirmPassword = t('confirmPasswordRequired')
+    else if (formData.password !== formData.confirmPassword) errs.confirmPassword = t('passwordsDontMatch')
+    if (!formData.agreeToTerms) errs.agreeToTerms = t('mustAgreeToTerms')
     return errs
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     const errs = validate()
     setErrors(errs)
     if (Object.keys(errs).length > 0) return
     setLoading(true)
-    fetch('http://localhost:5000/api/auth/signup', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
+    
+    try {
+      const data = await authAPI.signup({
         name: formData.firstName + ' ' + formData.lastName,
         email: formData.email,
         password: formData.password
       })
-    })
-      .then(async (res) => {
-        const data = await res.json()
-        setLoading(false)
-        if (!res.ok) {
-          setToast(data.error || 'Signup failed')
-          setTimeout(() => setToast(''), 2000)
-          return
-        }
-        
-        // Store token and trigger setup flow
-        localStorage.setItem('token', data.token)
-        setToast('Account created! Setting up your chatbot...')
-        
-        // Call the success callback to trigger setup
-        if (onSignupSuccess) {
-          onSignupSuccess()
-        }
-        
-        setFormData({
-          firstName: '',
-          lastName: '',
-          email: '',
-          password: '',
-          confirmPassword: '',
-          agreeToTerms: false
-        })
+      
+      setLoading(false)
+      
+      // ✅ SECURE: Store only user info (no token in localStorage)
+      localStorage.setItem('user', JSON.stringify(data.user))
+      setToast('Account created! Setting up your chatbot...')
+      
+      // Call the success callback to trigger setup
+      if (onSignupSuccess) {
+        onSignupSuccess()
+      }
+      
+      setFormData({
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        agreeToTerms: false
       })
-      .catch(() => {
-        setLoading(false)
-        setToast('Server error')
-        setTimeout(() => setToast(''), 2000)
-      })
+    } catch (err) {
+      setLoading(false)
+      setToast(err.message || 'Signup failed')
+      setTimeout(() => setToast(''), 2000)
+    }
   }
 
   function handleSocialSignup(provider) {
@@ -140,7 +134,7 @@ export default function Signup({ onSignupSuccess }) {
   }
 
   const passwordStrength = getPasswordStrength(formData.password)
-  const passwordStrengthText = ['Too weak', 'Weak', 'Medium', 'Strong', 'Very strong'][passwordStrength]
+  const passwordStrengthText = [t('passwordTooWeak'), t('passwordWeak'), t('passwordMedium'), t('passwordStrong'), t('passwordVeryStrong')][passwordStrength]
   const passwordStrengthColor = ['bg-red-500', 'bg-orange-400', 'bg-yellow-400', 'bg-green-500', 'bg-green-600'][passwordStrength]
 
   function openModal(type) { setModal({ open: true, type }) }
@@ -150,15 +144,15 @@ export default function Signup({ onSignupSuccess }) {
       case 'terms':
         return (
           <div>
-            <h2 className="text-2xl font-bold text-white mb-4">Terms of Service</h2>
-            <p className="text-gray-300">Please read our terms of service. (This is a placeholder for the terms of service.)</p>
+            <h2 className="text-2xl font-bold text-white mb-4">{t('termsOfService')}</h2>
+            <p className="text-gray-300">{t('termsOfServiceDesc')}</p>
           </div>
         )
       case 'privacy':
         return (
           <div>
-            <h2 className="text-2xl font-bold text-white mb-4">Privacy Policy</h2>
-            <p className="text-gray-300">Your privacy is important to us. (This is a placeholder for the privacy policy.)</p>
+            <h2 className="text-2xl font-bold text-white mb-4">{t('privacyPolicy')}</h2>
+            <p className="text-gray-300">{t('privacyPolicyDesc')}</p>
           </div>
         )
       default:
@@ -166,20 +160,39 @@ export default function Signup({ onSignupSuccess }) {
     }
   }
 
+  // Language Switcher component
+  const LanguageSwitcher = () => (
+    <div className="fixed top-4 right-4 z-50 flex gap-2">
+      <button
+        onClick={() => changeLanguage('en')}
+        className={`px-3 py-1 rounded-lg font-semibold transition border border-gray-600 bg-gray-800 text-white hover:bg-purple-600 ${language === 'en' ? 'bg-purple-600 border-purple-700' : ''}`}
+      >
+        English
+      </button>
+      <button
+        onClick={() => changeLanguage('ar')}
+        className={`px-3 py-1 rounded-lg font-semibold transition border border-gray-600 bg-gray-800 text-white hover:bg-purple-600 ${language === 'ar' ? 'bg-purple-600 border-purple-700' : ''}`}
+      >
+        العربية
+      </button>
+    </div>
+  )
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-gray-900">
+      <LanguageSwitcher />
       {/* Left: Illustration and branding */}
       <div className="hidden md:flex flex-col justify-center items-center w-1/2 bg-gradient-to-br from-purple-700 via-indigo-700 to-gray-900 p-12 relative">
         <div className="absolute top-8 left-8 flex items-center gap-2">
           <span className="bg-gradient-to-tr from-purple-600 via-purple-500 to-indigo-500 p-3 rounded-2xl shadow-lg">
             <SparklesIcon className="h-8 w-8 text-white drop-shadow" />
           </span>
-          <span className="text-2xl font-extrabold text-white tracking-tight">ChatBot Platform</span>
+          <span className="text-2xl font-extrabold text-white tracking-tight">{t('chatbotPlatform')}</span>
         </div>
         <div className="flex-1 flex flex-col justify-center items-center">
           <ChatbotSVG />
-          <h2 className="text-3xl font-bold text-white mt-8 mb-2 text-center">Join ChatBot Platform</h2>
-          <p className="text-lg text-indigo-100 text-center max-w-xs">AI-powered chatbots for modern business. Automate, engage, and grow with ease.</p>
+          <h2 className="text-3xl font-bold text-white mt-8 mb-2 text-center">{t('joinChatbotPlatform')}</h2>
+          <p className="text-lg text-indigo-100 text-center max-w-xs">{t('aiPoweredChatbotsSignup')}</p>
         </div>
       </div>
       {/* Right: Signup card */}
@@ -189,11 +202,11 @@ export default function Signup({ onSignupSuccess }) {
             <span className="bg-gradient-to-tr from-purple-600 via-purple-500 to-indigo-500 p-3 rounded-2xl shadow-lg">
               <SparklesIcon className="h-8 w-8 text-white drop-shadow" />
             </span>
-            <span className="text-2xl font-extrabold text-white tracking-tight">ChatBot Platform</span>
+            <span className="text-2xl font-extrabold text-white tracking-tight">{t('chatbotPlatform')}</span>
           </div>
           <div className="text-center">
-            <h2 className="text-3xl font-bold text-white">Create your account</h2>
-            <p className="mt-2 text-gray-400">Sign up to start building amazing chatbots</p>
+            <h2 className="text-3xl font-bold text-white">{t('createYourAccount')}</h2>
+            <p className="mt-2 text-gray-400">{t('signupSubtitle')}</p>
           </div>
           {toast && (
             <div className="fixed top-6 right-6 bg-green-600 text-white px-4 py-2 rounded shadow-lg z-50 animate-bounce" aria-live="polite">{toast}</div>
@@ -209,37 +222,37 @@ export default function Signup({ onSignupSuccess }) {
                   type="button"
                   onClick={() => handleSocialSignup('Google')}
                   className="w-full py-2 px-4 bg-white text-gray-800 rounded-lg font-semibold hover:bg-gray-100 transition flex items-center justify-center gap-2 border border-gray-300 shadow"
-                  aria-label="Sign up with Google"
+                  aria-label={t('signUpWithGoogle')}
                 >
-                  {googleSvg} Sign up with Google
+                  {googleSvg} {t('signUpWithGoogle')}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSocialSignup('Microsoft')}
                   className="w-full py-2 px-4 bg-[#f3f3f3] text-gray-800 rounded-lg font-semibold hover:bg-gray-200 transition flex items-center justify-center gap-2 border border-gray-300 shadow"
-                  aria-label="Sign up with Microsoft"
+                  aria-label={t('signUpWithMicrosoft')}
                 >
-                  {microsoftSvg} Sign up with Microsoft
+                  {microsoftSvg} {t('signUpWithMicrosoft')}
                 </button>
                 <button
                   type="button"
                   onClick={() => handleSocialSignup('GitHub')}
                   className="w-full py-2 px-4 bg-gray-900 text-white rounded-lg font-semibold hover:bg-gray-800 transition flex items-center justify-center gap-2 border border-gray-700 shadow"
-                  aria-label="Sign up with GitHub"
+                  aria-label={t('signUpWithGitHub')}
                 >
-                  {githubSvg} Sign up with GitHub
+                  {githubSvg} {t('signUpWithGitHub')}
                 </button>
               </div>
               <div className="flex items-center my-2">
                 <div className="flex-grow border-t border-gray-700" />
-                <span className="mx-2 text-gray-400 text-xs">or</span>
+                <span className="mx-2 text-gray-400 text-xs">{t('or')}</span>
                 <div className="flex-grow border-t border-gray-700" />
               </div>
               {/* Main form fields */}
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-2">
                   <div>
-                    <label htmlFor="firstName" className="block text-xs font-medium text-gray-300 mb-1">First Name</label>
+                    <label htmlFor="firstName" className="block text-xs font-medium text-gray-300 mb-1">{t('firstName')}</label>
                     <input
                       id="firstName"
                       name="firstName"
@@ -248,12 +261,12 @@ export default function Signup({ onSignupSuccess }) {
                       value={formData.firstName}
                       onChange={e => setFormData({ ...formData, firstName: e.target.value })}
                       className={`w-full px-3 py-2 bg-gray-700 border ${errors.firstName ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 text-sm`}
-                      placeholder="John"
+                      placeholder={t('firstNamePlaceholder')}
                     />
                     {errors.firstName && <div className="text-red-400 text-xs mt-1" role="alert">{errors.firstName}</div>}
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-xs font-medium text-gray-300 mb-1">Last Name</label>
+                    <label htmlFor="lastName" className="block text-xs font-medium text-gray-300 mb-1">{t('lastName')}</label>
                     <input
                       id="lastName"
                       name="lastName"
@@ -262,13 +275,13 @@ export default function Signup({ onSignupSuccess }) {
                       value={formData.lastName}
                       onChange={e => setFormData({ ...formData, lastName: e.target.value })}
                       className={`w-full px-3 py-2 bg-gray-700 border ${errors.lastName ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 text-sm`}
-                      placeholder="Doe"
+                      placeholder={t('lastNamePlaceholder')}
                     />
                     {errors.lastName && <div className="text-red-400 text-xs mt-1" role="alert">{errors.lastName}</div>}
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="email" className="block text-xs font-medium text-gray-300 mb-1">Email Address</label>
+                  <label htmlFor="email" className="block text-xs font-medium text-gray-300 mb-1">{t('emailAddress')}</label>
                   <input
                     id="email"
                     name="email"
@@ -277,12 +290,12 @@ export default function Signup({ onSignupSuccess }) {
                     value={formData.email}
                     onChange={e => setFormData({ ...formData, email: e.target.value })}
                     className={`w-full px-3 py-2 bg-gray-700 border ${errors.email ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 text-sm`}
-                    placeholder="john@example.com"
+                    placeholder={t('emailPlaceholder')}
                   />
                   {errors.email && <div className="text-red-400 text-xs mt-1" role="alert">{errors.email}</div>}
                 </div>
                 <div>
-                  <label htmlFor="password" className="block text-xs font-medium text-gray-300 mb-1">Password</label>
+                  <label htmlFor="password" className="block text-xs font-medium text-gray-300 mb-1">{t('password')}</label>
                   <div className="relative">
                     <input
                       id="password"
@@ -292,12 +305,12 @@ export default function Signup({ onSignupSuccess }) {
                       value={formData.password}
                       onChange={e => setFormData({ ...formData, password: e.target.value })}
                       className={`w-full px-3 py-2 bg-gray-700 border ${errors.password ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 pr-10 text-sm`}
-                      placeholder="Create a strong password"
+                      placeholder={t('passwordPlaceholder')}
                     />
                     <button
                       type="button"
-                      aria-label={showPassword ? 'Hide password' : 'Show password'}
-                      title={showPassword ? 'Hide password' : 'Show password'}
+                      aria-label={showPassword ? t('hidePassword') : t('showPassword')}
+                      title={showPassword ? t('hidePassword') : t('showPassword')}
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute inset-y-0 right-0 pr-2 flex items-center text-gray-400 hover:text-gray-300"
                     >
@@ -317,7 +330,7 @@ export default function Signup({ onSignupSuccess }) {
                   {errors.password && <div className="text-red-400 text-xs mt-1" role="alert">{errors.password}</div>}
                 </div>
                 <div>
-                  <label htmlFor="confirmPassword" className="block text-xs font-medium text-gray-300 mb-1">Confirm Password</label>
+                  <label htmlFor="confirmPassword" className="block text-xs font-medium text-gray-300 mb-1">{t('confirmPassword')}</label>
                   <div className="relative">
                     <input
                       id="confirmPassword"
@@ -327,12 +340,12 @@ export default function Signup({ onSignupSuccess }) {
                       value={formData.confirmPassword}
                       onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })}
                       className={`w-full px-3 py-2 bg-gray-700 border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400 pr-10 text-sm`}
-                      placeholder="Re-enter your password"
+                      placeholder={t('confirmPasswordPlaceholder')}
                     />
                     <button
                       type="button"
-                      aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
-                      title={showConfirmPassword ? 'Hide password' : 'Show password'}
+                      aria-label={showConfirmPassword ? t('hidePassword') : t('showPassword')}
+                      title={showConfirmPassword ? t('hidePassword') : t('showPassword')}
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                       className="absolute inset-y-0 right-0 pr-2 flex items-center text-gray-400 hover:text-gray-300"
                     >
@@ -352,26 +365,26 @@ export default function Signup({ onSignupSuccess }) {
                     checked={formData.agreeToTerms}
                     onChange={e => setFormData({ ...formData, agreeToTerms: e.target.checked })}
                     className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-600 rounded bg-gray-700 mt-1"
-                    aria-label="Agree to terms"
+                    aria-label={t('agreeToTerms')}
                     onMouseEnter={() => setShowTermsTooltip(true)}
                     onMouseLeave={() => setShowTermsTooltip(false)}
                     onFocus={() => setShowTermsTooltip(true)}
                     onBlur={() => setShowTermsTooltip(false)}
                   />
                   <label htmlFor="agreeToTerms" className="ml-2 text-xs text-gray-300">
-                    I agree to the{' '}
+                    {t('iAgreeTo')}{' '}
                     <button type="button" onClick={() => openModal('terms')} className="text-purple-400 hover:text-purple-300 underline">
-                      Terms of Service
+                      {t('termsOfService')}
                     </button>{' '}
-                    and{' '}
+                    {t('and')}{' '}
                     <button type="button" onClick={() => openModal('privacy')} className="text-purple-400 hover:text-purple-300 underline">
-                      Privacy Policy
+                      {t('privacyPolicy')}
                     </button>
                   </label>
                   {showTermsTooltip && (
                     <span className="absolute left-0 top-8 bg-gray-800 text-gray-200 text-xs rounded px-2 py-1 shadow border border-gray-700 z-20 flex items-center gap-1 animate-fadein" role="tooltip">
                       <InformationCircleIcon className="h-4 w-4 text-purple-400" />
-                      You must agree to continue
+                      {t('mustAgreeToContinue')}
                     </span>
                   )}
                   {errors.agreeToTerms && <div className="text-red-400 text-xs mt-1 ml-2" role="alert">{errors.agreeToTerms}</div>}
@@ -385,24 +398,24 @@ export default function Signup({ onSignupSuccess }) {
                   {loading ? (
                     <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" /></svg>
                   ) : null}
-                  {loading ? 'Creating account...' : 'Create Account'}
+                  {loading ? t('creatingAccount') : t('createAccount')}
                 </button>
                 <button
                   type="button"
                   onClick={handleDemoSignup}
                   className="w-full py-2 px-4 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-600 transition flex items-center justify-center gap-2 mt-1 text-base"
-                  aria-label="Sign up as demo user"
+                  aria-label={t('signUpAsDemoUser')}
                   disabled={loading}
                 >
-                  <span className="text-lg">✨</span> Sign up as demo user
+                  <span className="text-lg">✨</span> {t('signUpAsDemoUser')}
                 </button>
               </div>
             </div>
             <div className="text-center mt-4">
               <p className="text-gray-400 text-sm">
-                Already have an account?{' '}
+                {t('alreadyHaveAccount')}{' '}
                 <a href="/login" className="text-purple-400 hover:text-purple-300 font-medium">
-                  Log in
+                  {t('login')}
                 </a>
               </p>
             </div>

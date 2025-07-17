@@ -16,123 +16,47 @@ import {
   ChartBarIcon,
   PaperAirplaneIcon
 } from '@heroicons/react/24/outline'
-
-const categories = [
-  { name: 'Getting Started', icon: PlayIcon, color: 'blue' },
-  { name: 'Bot Setup', icon: Cog6ToothIcon, color: 'green' },
-  { name: 'Integrations', icon: GlobeAltIcon, color: 'purple' },
-  { name: 'Team Management', icon: UserGroupIcon, color: 'orange' },
-  { name: 'Analytics', icon: ChartBarIcon, color: 'indigo' },
-  { name: 'Security', icon: ShieldCheckIcon, color: 'red' },
-]
-
-const faqs = [
-  { 
-    category: 'Getting Started',
-    q: 'How do I create my first chatbot?', 
-    a: 'Go to the Bots page, click "Create New Bot", give it a name and description, then configure its responses and connect it to your preferred channels.' 
-  },
-  { 
-    category: 'Getting Started',
-    q: 'What channels can I connect my bot to?', 
-    a: 'Currently supported channels include WhatsApp Business API, Facebook Messenger, Instagram Direct Messages, and web chat widgets.' 
-  },
-  { 
-    category: 'Bot Setup',
-    q: 'How do I train my bot with custom responses?', 
-    a: 'Navigate to Settings > Bots > AI Training, upload your knowledge base documents or add conversation examples to improve bot responses.' 
-  },
-  { 
-    category: 'Bot Setup',
-    q: 'Can I set different responses for different languages?', 
-    a: 'Yes, you can configure multi-language responses in your bot settings. The bot will automatically detect the user\'s language and respond accordingly.' 
-  },
-  { 
-    category: 'Integrations',
-    q: 'How do I connect WhatsApp Business API?', 
-    a: 'Go to Settings > Integrations, click on WhatsApp, follow the setup wizard to connect your WhatsApp Business account and verify your phone number.' 
-  },
-  { 
-    category: 'Integrations',
-    q: 'What webhook events are available?', 
-    a: 'Available webhook events include: message_received, message_sent, bot_status_changed, user_joined, and conversation_ended.' 
-  },
-  { 
-    category: 'Team Management',
-    q: 'How do I invite team members?', 
-    a: 'Go to Settings > Team, click "Invite Member", enter their email address, assign a role (Admin, Manager, or Agent), and send the invitation.' 
-  },
-  { 
-    category: 'Team Management',
-    q: 'What are the different user roles?', 
-    a: 'Admin: Full access to all features. Manager: Can manage bots and view analytics. Agent: Can only respond to conversations and view assigned chats.' 
-  },
-  { 
-    category: 'Analytics',
-    q: 'How do I view conversation analytics?', 
-    a: 'Go to the Stats page to view detailed analytics including message volume, response times, customer satisfaction scores, and bot performance metrics.' 
-  },
-  { 
-    category: 'Analytics',
-    q: 'Can I export my analytics data?', 
-    a: 'Yes, you can export analytics data in CSV or JSON format. Go to Stats page and click the export button in the top right corner.' 
-  },
-  { 
-    category: 'Security',
-    q: 'How secure is my data?', 
-    a: 'We use enterprise-grade encryption, secure API keys, and comply with GDPR and SOC 2 standards. All data is encrypted in transit and at rest.' 
-  },
-  { 
-    category: 'Security',
-    q: 'How do I enable two-factor authentication?', 
-    a: 'Go to Settings > Security, choose between SMS or authenticator app, and follow the setup instructions to enable 2FA for your account.' 
-  },
-]
-
-const tutorials = [
-  {
-    title: 'Getting Started with ChatBot Platform',
-    duration: '5 min',
-    type: 'video',
-    description: 'Learn the basics of setting up your first chatbot'
-  },
-  {
-    title: 'Connecting WhatsApp Business API',
-    duration: '8 min',
-    type: 'video',
-    description: 'Step-by-step guide to connect your WhatsApp account'
-  },
-  {
-    title: 'Training Your Bot with AI',
-    duration: '12 min',
-    type: 'video',
-    description: 'How to improve bot responses with custom training data'
-  },
-  {
-    title: 'Setting Up Team Permissions',
-    duration: '6 min',
-    type: 'video',
-    description: 'Configure roles and permissions for your team'
-  },
-  {
-    title: 'API Integration Guide',
-    duration: '15 min',
-    type: 'document',
-    description: 'Complete guide to integrating with our REST API'
-  },
-  {
-    title: 'Webhook Configuration',
-    duration: '10 min',
-    type: 'document',
-    description: 'Set up webhooks to receive real-time updates'
-  },
-]
+import { useLanguage } from '../contexts/LanguageContext'
 
 export default function Help() {
+  const { t, isRTL } = useLanguage()
+
+  // Define categories, faqs, and tutorials arrays here (as in previous edit)
+  const categories = [
+    { name: t('categoryGettingStarted'), icon: PlayIcon, color: 'blue' },
+    { name: t('categoryBotSetup'), icon: Cog6ToothIcon, color: 'green' },
+    { name: t('categoryIntegrations'), icon: GlobeAltIcon, color: 'purple' },
+    { name: t('categoryTeamManagement'), icon: UserGroupIcon, color: 'orange' },
+    { name: t('categoryAnalytics'), icon: ChartBarIcon, color: 'indigo' },
+    { name: t('categorySecurity'), icon: ShieldCheckIcon, color: 'red' },
+  ]
+  const faqs = [
+    { category: t('categoryGettingStarted'), q: t('faqHowCreateBot'), a: t('faqHowCreateBotAnswer') },
+    { category: t('categoryGettingStarted'), q: t('faqWhatChannels'), a: t('faqWhatChannelsAnswer') },
+    { category: t('categoryBotSetup'), q: t('faqTrainBot'), a: t('faqTrainBotAnswer') },
+    { category: t('categoryBotSetup'), q: t('faqDifferentResponses'), a: t('faqDifferentResponsesAnswer') },
+    { category: t('categoryIntegrations'), q: t('faqConnectWhatsApp'), a: t('faqConnectWhatsAppAnswer') },
+    { category: t('categoryIntegrations'), q: t('faqWebhookEvents'), a: t('faqWebhookEventsAnswer') },
+    { category: t('categoryTeamManagement'), q: t('faqInviteTeamMembers'), a: t('faqInviteTeamMembersAnswer') },
+    { category: t('categoryTeamManagement'), q: t('faqUserRoles'), a: t('faqUserRolesAnswer') },
+    { category: t('categoryAnalytics'), q: t('faqViewConversationAnalytics'), a: t('faqViewConversationAnalyticsAnswer') },
+    { category: t('categoryAnalytics'), q: t('faqExportAnalytics'), a: t('faqExportAnalyticsAnswer') },
+    { category: t('categorySecurity'), q: t('faqDataSecurity'), a: t('faqDataSecurityAnswer') },
+    { category: t('categorySecurity'), q: t('faqEnableTwoFactorAuth'), a: t('faqEnableTwoFactorAuthAnswer') },
+  ]
+  const tutorials = [
+    { title: t('tutorialGettingStartedTitle'), duration: '5 min', type: 'video', description: t('tutorialGettingStartedDesc') },
+    { title: t('tutorialConnectWhatsAppTitle'), duration: '8 min', type: 'video', description: t('tutorialConnectWhatsAppDesc') },
+    { title: t('tutorialTrainingBotTitle'), duration: '12 min', type: 'video', description: t('tutorialTrainingBotDesc') },
+    { title: t('tutorialTeamPermissionsTitle'), duration: '6 min', type: 'video', description: t('tutorialTeamPermissionsDesc') },
+    { title: t('tutorialApiIntegrationTitle'), duration: '15 min', type: 'document', description: t('tutorialApiIntegrationDesc') },
+    { title: t('tutorialWebhookConfigTitle'), duration: '10 min', type: 'document', description: t('tutorialWebhookConfigDesc') },
+  ]
+  
   const [search, setSearch] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [showContactModal, setShowContactModal] = useState(false)
-  const [showChatModal, setShowChatModal] = useState(false)
+  const [showFaqModal, setShowFaqModal] = useState(false)
   const [contactForm, setContactForm] = useState({
     name: '',
     email: '',
@@ -143,17 +67,42 @@ export default function Help() {
   const [contactErrors, setContactErrors] = useState({})
   const [contactLoading, setContactLoading] = useState(false)
   const [toast, setToast] = useState('')
+  const [showChatModal, setShowChatModal] = useState(false)
   const [chatMessages, setChatMessages] = useState([
     { id: 1, sender: 'agent', text: 'Hi! How can I help you today?' }
   ])
   const [chatInput, setChatInput] = useState('')
   const [chatLoading, setChatLoading] = useState(false)
-  const [chatClosed, setChatClosed] = useState(false)
   const chatEndRef = useRef(null)
 
   useEffect(() => {
     if (chatEndRef.current) chatEndRef.current.scrollIntoView({ behavior: 'smooth' })
   }, [chatMessages, showChatModal])
+
+  const handleChatSend = async (e) => {
+    e.preventDefault()
+    if (!chatInput.trim()) return
+    const msg = { id: Date.now(), sender: 'user', text: chatInput }
+    setChatMessages(prev => [...prev, msg])
+    setChatInput('')
+    setChatLoading(true)
+    try {
+      const res = await fetch('http://localhost:8000/faq', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question: msg.text })
+      })
+      const data = await res.json()
+      if (data.answer) {
+        setChatMessages(prev => [...prev, { id: Date.now() + 1, sender: 'agent', text: data.answer }])
+      } else {
+        setChatMessages(prev => [...prev, { id: Date.now() + 1, sender: 'agent', text: 'Sorry, I could not get an answer right now.' }])
+      }
+    } catch (err) {
+      setChatMessages(prev => [...prev, { id: Date.now() + 1, sender: 'agent', text: 'Sorry, there was an error connecting to the FAQ agent.' }])
+    }
+    setChatLoading(false)
+  }
 
   const filteredFaqs = faqs.filter(faq => {
     const matchesSearch = faq.q.toLowerCase().includes(search.toLowerCase()) || 
@@ -164,11 +113,11 @@ export default function Help() {
 
   function validateContact() {
     const errs = {}
-    if (!contactForm.name) errs.name = 'Name is required.'
-    if (!contactForm.email) errs.email = 'Email is required.'
-    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contactForm.email)) errs.email = 'Invalid email.'
-    if (!contactForm.subject) errs.subject = 'Subject is required.'
-    if (!contactForm.message) errs.message = 'Message is required.'
+    if (!contactForm.name) errs.name = t('nameRequired')
+    if (!contactForm.email) errs.email = t('emailRequired')
+    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contactForm.email)) errs.email = t('invalidEmail')
+    if (!contactForm.subject) errs.subject = t('subjectRequired')
+    if (!contactForm.message) errs.message = t('messageRequired')
     return errs
   }
 
@@ -182,170 +131,117 @@ export default function Help() {
       setContactLoading(false)
       setShowContactModal(false)
       setContactForm({ name: '', email: '', subject: '', message: '', priority: 'medium' })
-      setToast('Support request sent!')
+      setToast(t('supportRequestSent'))
       setTimeout(() => setToast(''), 2000)
     }, 1200)
   }
 
-  const handleChatSend = (e) => {
-    e.preventDefault()
-    if (!chatInput.trim()) return
-    const msg = { id: Date.now(), sender: 'user', text: chatInput }
-    setChatMessages(prev => [...prev, msg])
-    setChatInput('')
-    setChatLoading(true)
-    setTimeout(() => {
-      setChatMessages(prev => [...prev, { id: Date.now() + 1, sender: 'agent', text: 'Thanks for your message! A support agent will reply soon.' }])
-      setChatLoading(false)
-    }, 1200)
-  }
-
-  const handleCloseChat = () => {
-    setShowChatModal(false)
-    setChatClosed(true)
-    setTimeout(() => setChatClosed(false), 2000)
-    setToast('Chat closed!')
-    setTimeout(() => setToast(''), 2000)
-    setChatMessages([{ id: 1, sender: 'agent', text: 'Hi! How can I help you today?' }])
-    setChatInput('')
-  }
-
   return (
-    <div className="max-w-6xl mx-auto animate-fadein">
-      <h1 className="text-3xl font-bold text-white mb-8">Help & Support Center</h1>
+    <div className={isRTL ? 'text-right' : 'text-left'}>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-white mb-2">{t('help')}</h1>
+        <p className="text-gray-400">{t('findAnswersAndSupport')}</p>
+      </div>
+
+      {/* Toast */}
       {toast && (
-        <div className="fixed top-6 right-6 bg-green-600 text-white px-4 py-2 rounded shadow-lg z-50 animate-bounce" aria-live="polite">{toast}</div>
+        <div className="fixed top-6 right-6 bg-green-600 text-white px-4 py-2 rounded shadow-lg z-50">
+          {toast}
+        </div>
       )}
-      {/* Search Bar */}
-      <div className="bg-gray-800 rounded-xl shadow p-6 mb-8 border border-gray-700">
-        <div className="max-w-2xl mx-auto">
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-            <input 
-              value={search} 
-              onChange={e => setSearch(e.target.value)} 
-              placeholder="Search for help articles, tutorials, or FAQs..." 
-              className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-white placeholder-gray-400" 
-              aria-label="Search help"
-            />
-          </div>
+
+      {/* Search */}
+      <div className="bg-gray-800 rounded-xl p-6 mb-8 border border-gray-700">
+        <div className="relative">
+          <MagnifyingGlassIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+          <input
+            type="text"
+            placeholder={t('searchHelp')}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-        <button 
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <button
           onClick={() => setShowContactModal(true)}
-          className="flex items-center gap-3 p-4 bg-gray-800 rounded-xl shadow hover:shadow-lg transition border border-gray-700"
-          aria-label="Contact support"
+          className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:bg-gray-700 transition text-left"
         >
-          <EnvelopeIcon className="h-8 w-8 text-purple-400" />
-          <div className="text-left">
-            <div className="font-semibold text-white">Contact Support</div>
-            <div className="text-sm text-gray-400">Get help from our team</div>
-          </div>
+          <EnvelopeIcon className="h-8 w-8 text-blue-400 mb-3" />
+          <h3 className="text-lg font-semibold text-white mb-2">{t('contactSupport')}</h3>
+          <p className="text-gray-400">{t('contactSupportDesc')}</p>
         </button>
-        <button 
-          onClick={() => setShowChatModal(true)}
-          className="flex items-center gap-3 p-4 bg-gray-800 rounded-xl shadow hover:shadow-lg transition border border-gray-700"
-          aria-label="Live chat"
-        >
-          <ChatBubbleLeftRightIcon className="h-8 w-8 text-green-400" />
-          <div className="text-left">
-            <div className="font-semibold text-white">Live Chat</div>
-            <div className="text-sm text-gray-400">Chat with support agent</div>
-          </div>
+        <button className="bg-gray-800 rounded-xl p-6 border border-gray-700 hover:bg-gray-700 transition text-left">
+          <BookOpenIcon className="h-8 w-8 text-purple-400 mb-3" />
+          <h3 className="text-lg font-semibold text-white mb-2">{t('documentation')}</h3>
+          <p className="text-gray-400">{t('documentationDesc')}</p>
         </button>
-        <a 
-          href="tel:+1-800-CHATBOT"
-          className="flex items-center gap-3 p-4 bg-gray-800 rounded-xl shadow hover:shadow-lg transition border border-gray-700"
-          aria-label="Call support"
-        >
-          <PhoneIcon className="h-8 w-8 text-blue-400" />
-          <div className="text-left">
-            <div className="font-semibold text-white">Call Us</div>
-            <div className="text-sm text-gray-400">+1-800-CHATBOT</div>
-          </div>
-        </a>
       </div>
 
       {/* Categories */}
       <div className="mb-8">
-        <h2 className="text-xl font-bold text-white mb-4">Browse by Category</h2>
+        <h2 className="text-xl font-semibold text-white mb-4">{t('helpCategories')}</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <button
             onClick={() => setSelectedCategory('All')}
-            className={`p-4 rounded-xl border-2 transition ${
-              selectedCategory === 'All' 
-                ? 'border-purple-500 bg-purple-900/20' 
-                : 'border-gray-600 bg-gray-800 hover:border-gray-500'
+            className={`p-4 rounded-lg border transition ${
+              selectedCategory === 'All'
+                ? 'bg-purple-600 border-purple-500 text-white'
+                : 'bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700'
             }`}
           >
-            <div className="text-center">
-              <QuestionMarkCircleIcon className="h-8 w-8 text-gray-300 mx-auto mb-2" />
-              <div className="font-medium text-sm text-white">All Topics</div>
-            </div>
+            {t('all')}
           </button>
           {categories.map(category => (
             <button
               key={category.name}
               onClick={() => setSelectedCategory(category.name)}
-              className={`p-4 rounded-xl border-2 transition ${
-                selectedCategory === category.name 
-                  ? 'border-purple-500 bg-purple-900/20' 
-                  : 'border-gray-600 bg-gray-800 hover:border-gray-500'
+              className={`p-4 rounded-lg border transition ${
+                selectedCategory === category.name
+                  ? 'bg-purple-600 border-purple-500 text-white'
+                  : 'bg-gray-800 border-gray-700 text-gray-300 hover:bg-gray-700'
               }`}
             >
-              <div className="text-center">
-                <category.icon className={`h-8 w-8 text-${category.color}-400 mx-auto mb-2`} />
-                <div className="font-medium text-sm text-white">{category.name}</div>
-              </div>
+              <category.icon className="h-6 w-6 mx-auto mb-2" />
+              <span className="text-sm">{category.name}</span>
             </button>
           ))}
         </div>
       </div>
 
       {/* FAQs */}
-      <div className="bg-gray-800 rounded-xl shadow p-6 mb-8 border border-gray-700">
-        <h2 className="text-xl font-bold text-white mb-4">Frequently Asked Questions</h2>
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold text-white mb-4">{t('frequentlyAskedQuestions')}</h2>
         <div className="space-y-4">
           {filteredFaqs.map((faq, index) => (
-            <details key={index} className="border border-gray-600 rounded-lg">
-              <summary className="p-4 cursor-pointer hover:bg-gray-700 font-medium text-gray-200">
-                {faq.q}
-              </summary>
-              <div className="p-4 pt-0 text-gray-300 border-t border-gray-600">
-                {faq.a}
-              </div>
-            </details>
+            <div key={index} className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+              <h3 className="text-lg font-semibold text-white mb-2">{faq.q}</h3>
+              <p className="text-gray-400">{faq.a}</p>
+            </div>
           ))}
         </div>
-        {filteredFaqs.length === 0 && (
-          <div className="text-center py-8 text-gray-400">
-            No questions found matching your search criteria.
-          </div>
-        )}
       </div>
 
-      {/* Tutorials & Documentation */}
+      {/* Tutorials */}
       <div className="mb-8">
-        <h2 className="text-xl font-bold text-white mb-4">Tutorials & Documentation</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <h2 className="text-xl font-semibold text-white mb-4">{t('tutorials')}</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {tutorials.map((tutorial, index) => (
-            <div key={index} className="bg-gray-800 rounded-xl shadow p-4 hover:shadow-lg transition border border-gray-700">
-              <div className="flex items-start justify-between mb-3">
+            <div key={index} className="bg-gray-800 rounded-xl p-6 border border-gray-700">
+              <div className="flex items-center gap-3 mb-3">
                 {tutorial.type === 'video' ? (
                   <VideoCameraIcon className="h-6 w-6 text-red-400" />
                 ) : (
-                  <DocumentTextIcon className="h-6 w-6 text-purple-400" />
+                  <DocumentTextIcon className="h-6 w-6 text-blue-400" />
                 )}
-                <span className="text-xs text-gray-400">{tutorial.duration}</span>
+                <span className="text-sm text-gray-400">{tutorial.duration}</span>
               </div>
-              <h3 className="font-semibold text-white mb-2">{tutorial.title}</h3>
-              <p className="text-sm text-gray-400 mb-3">{tutorial.description}</p>
-              <button className="text-purple-400 hover:text-purple-300 text-sm font-medium">
-                {tutorial.type === 'video' ? 'Watch Video' : 'Read Guide'}
-              </button>
+              <h3 className="text-lg font-semibold text-white mb-2">{tutorial.title}</h3>
+              <p className="text-gray-400">{tutorial.description}</p>
             </div>
           ))}
         </div>
@@ -353,96 +249,88 @@ export default function Help() {
 
       {/* Contact Modal */}
       {showContactModal && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 animate-fadein">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
           <div className="bg-gray-800 rounded-xl shadow-lg p-8 w-full max-w-md relative border border-gray-700">
             <button 
               onClick={() => setShowContactModal(false)} 
               className="absolute top-4 right-4 text-gray-400 hover:text-purple-400 text-xl"
-              aria-label="Close contact modal"
             >
               &times;
             </button>
-            <h2 className="text-xl font-bold text-white mb-6">Contact Support</h2>
-            <form onSubmit={handleContactSubmit} className="space-y-4" aria-label="Contact support form">
+            <h2 className="text-xl font-bold text-white mb-6">{t('contactSupport')}</h2>
+            <form onSubmit={handleContactSubmit} className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Name</label>
-                <input
-                  type="text"
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  {t('name')}
+                </label>
+                <input 
+                  type="text" 
                   value={contactForm.name}
-                  onChange={e => setContactForm({ ...contactForm, name: e.target.value })}
-                  className={`w-full px-4 py-2 bg-gray-700 border ${contactErrors.name ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400`}
-                  placeholder="Your name"
-                  aria-label="Name"
+                  onChange={(e) => setContactForm(prev => ({ ...prev, name: e.target.value }))}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white" 
+                  placeholder={t('enterYourName')}
                 />
-                {contactErrors.name && <div className="text-red-400 text-xs mt-1" role="alert">{contactErrors.name}</div>}
+                {contactErrors.name && <p className="text-red-400 text-sm mt-1">{contactErrors.name}</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
-                <input
-                  type="email"
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  {t('email')}
+                </label>
+                <input 
+                  type="email" 
                   value={contactForm.email}
-                  onChange={e => setContactForm({ ...contactForm, email: e.target.value })}
-                  className={`w-full px-4 py-2 bg-gray-700 border ${contactErrors.email ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400`}
-                  placeholder="you@email.com"
-                  aria-label="Email"
+                  onChange={(e) => setContactForm(prev => ({ ...prev, email: e.target.value }))}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white" 
+                  placeholder={t('enterYourEmail')}
                 />
-                {contactErrors.email && <div className="text-red-400 text-xs mt-1" role="alert">{contactErrors.email}</div>}
+                {contactErrors.email && <p className="text-red-400 text-sm mt-1">{contactErrors.email}</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Subject</label>
-                <input
-                  type="text"
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  {t('subject')}
+                </label>
+                <input 
+                  type="text" 
                   value={contactForm.subject}
-                  onChange={e => setContactForm({ ...contactForm, subject: e.target.value })}
-                  className={`w-full px-4 py-2 bg-gray-700 border ${contactErrors.subject ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400`}
-                  placeholder="Subject"
-                  aria-label="Subject"
+                  onChange={(e) => setContactForm(prev => ({ ...prev, subject: e.target.value }))}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white" 
+                  placeholder={t('enterSubject')}
                 />
-                {contactErrors.subject && <div className="text-red-400 text-xs mt-1" role="alert">{contactErrors.subject}</div>}
+                {contactErrors.subject && <p className="text-red-400 text-sm mt-1">{contactErrors.subject}</p>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Message</label>
-                <textarea
+                <label className="block text-sm font-medium text-gray-300 mb-1">
+                  {t('message')}
+                </label>
+                <textarea 
                   value={contactForm.message}
-                  onChange={e => setContactForm({ ...contactForm, message: e.target.value })}
-                  className={`w-full px-4 py-2 bg-gray-700 border ${contactErrors.message ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400`}
-                  placeholder="How can we help you?"
+                  onChange={(e) => setContactForm(prev => ({ ...prev, message: e.target.value }))}
+                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white" 
+                  placeholder={t('enterMessage')}
                   rows={4}
-                  aria-label="Message"
                 />
-                {contactErrors.message && <div className="text-red-400 text-xs mt-1" role="alert">{contactErrors.message}</div>}
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Priority</label>
-                <select
-                  value={contactForm.priority}
-                  onChange={e => setContactForm({ ...contactForm, priority: e.target.value })}
-                  className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white"
-                  aria-label="Priority"
-                >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
-                </select>
+                {contactErrors.message && <p className="text-red-400 text-sm mt-1">{contactErrors.message}</p>}
               </div>
               <div className="flex gap-3 pt-4">
-                <button
+                <button 
                   type="button"
                   onClick={() => setShowContactModal(false)}
                   className="flex-1 py-2 bg-gray-700 text-gray-200 rounded-lg font-semibold hover:bg-gray-600 transition"
                 >
-                  Cancel
+                  {t('cancel')}
                 </button>
                 <button
                   type="submit"
                   className="flex-1 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition flex items-center justify-center gap-2"
                   disabled={contactLoading}
-                  aria-busy={contactLoading}
                 >
                   {contactLoading && (
-                    <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" /></svg>
+                    <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
+                    </svg>
                   )}
-                  {contactLoading ? 'Sending...' : 'Send'}
+                  {contactLoading ? t('sending') : t('send')}
                 </button>
               </div>
             </form>
@@ -450,61 +338,78 @@ export default function Help() {
         </div>
       )}
 
-      {/* Live Chat Modal */}
+      {/* FAQ Floating Icon */}
+      <button
+        onClick={() => setShowChatModal(true)}
+        className="fixed bottom-6 right-6 bg-purple-600 hover:bg-purple-700 text-white rounded-full shadow-lg p-4 z-50 flex items-center justify-center"
+        style={{ boxShadow: '0 4px 24px rgba(80,0,200,0.2)' }}
+        aria-label="Open FAQ Chat"
+      >
+        <QuestionMarkCircleIcon className="h-8 w-8" />
+      </button>
+      {/* Chat Modal (FAQ Chat) */}
       {showChatModal && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 animate-fadein">
-          <div className="bg-gray-800 rounded-xl shadow-lg p-8 w-full max-w-md relative border border-gray-700 flex flex-col">
-            <button
-              onClick={handleCloseChat}
-              className="absolute top-4 right-4 text-gray-400 hover:text-purple-400 text-xl"
-              aria-label="Close chat modal"
+        <div className="fixed inset-0 z-50 pointer-events-none">
+          <div className="absolute bottom-8 right-8 pointer-events-auto">
+            <div
+              className={`bg-gray-800 rounded-xl shadow-lg w-80 h-96 border border-gray-700 flex flex-col animate-faq-chat-in`}
+              style={{ minWidth: '320px', maxWidth: '90vw' }}
             >
-              &times;
-            </button>
-            <h2 className="text-xl font-bold text-white mb-4">Live Chat with Support</h2>
-            <div className="flex-1 overflow-y-auto mb-4 max-h-64" aria-live="polite">
-              {chatMessages.map(msg => (
-                <div key={msg.id} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} animate-fadein mb-2`}>
-                  <div className={`px-4 py-2 rounded-lg ${msg.sender === 'user' ? 'bg-purple-600 text-white' : 'bg-gray-700 text-gray-200'}`}>
-                    {msg.text}
+              <div className="p-4 border-b border-gray-700 flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-white">{t('faqChat')}</h2>
+                <button 
+                  onClick={() => setShowChatModal(false)} 
+                  className="text-gray-400 hover:text-purple-400 text-xl"
+                >
+                  &times;
+                </button>
+              </div>
+              <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                {chatMessages.map(message => (
+                  <div
+                    key={message.id}
+                    className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                  >
+                    <div
+                      className={`max-w-xs px-4 py-2 rounded-lg ${
+                        message.sender === 'user'
+                          ? 'bg-purple-600 text-white'
+                          : 'bg-gray-700 text-gray-200'
+                      }`}
+                    >
+                      <div className="text-sm">{message.text}</div>
+                    </div>
                   </div>
-                </div>
-              ))}
-              {chatLoading && (
-                <div className="flex justify-start animate-fadein mb-2">
-                  <div className="px-4 py-2 rounded-lg bg-gray-700 text-gray-200 flex items-center gap-2">
-                    <ChatBubbleLeftRightIcon className="h-5 w-5 text-purple-400 animate-bounce" />
-                    <span className="text-sm">Agent is typing...</span>
+                ))}
+                {chatLoading && (
+                  <div className="flex justify-start">
+                    <div className="max-w-xs px-4 py-2 rounded-lg bg-gray-700 text-gray-200 flex items-center gap-2">
+                      <QuestionMarkCircleIcon className="h-5 w-5 text-purple-400 animate-bounce" />
+                      <span className="text-sm">{t('agentTyping') || 'Agent is typing...'}</span>
+                    </div>
                   </div>
-                </div>
-              )}
-              <div ref={chatEndRef} />
+                )}
+                <div ref={chatEndRef} />
+              </div>
+              <form onSubmit={handleChatSend} className="p-4 border-t border-gray-700 flex gap-2">
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  placeholder={t('typeMessage') || 'Type your message...'}
+                  className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+                <button
+                  type="submit"
+                  disabled={!chatInput.trim() || chatLoading}
+                  className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition"
+                >
+                  <PaperAirplaneIcon className="h-5 w-5" />
+                </button>
+              </form>
             </div>
-            <form onSubmit={handleChatSend} className="flex gap-2" aria-label="Send chat message">
-              <input
-                type="text"
-                value={chatInput}
-                onChange={e => setChatInput(e.target.value)}
-                placeholder="Type your message..."
-                className="flex-1 px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400"
-                aria-label="Type your message"
-                disabled={chatLoading}
-              />
-              <button
-                type="submit"
-                className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition flex items-center gap-2"
-                aria-label="Send message"
-                disabled={!chatInput.trim() || chatLoading}
-              >
-                <PaperAirplaneIcon className="h-5 w-5" />
-                Send
-              </button>
-            </form>
           </div>
         </div>
-      )}
-      {chatClosed && (
-        <div className="fixed top-20 right-6 bg-blue-600 text-white px-4 py-2 rounded shadow-lg z-50 animate-bounce" aria-live="polite">Chat closed!</div>
       )}
     </div>
   )

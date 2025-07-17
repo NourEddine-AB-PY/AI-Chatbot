@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from twilio.twiml.messaging_response import MessagingResponse
-import cohere
+import google.generativeai as genai
 import os
 import requests
 from dotenv import load_dotenv
@@ -27,8 +27,13 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 CORS(app)
 
-# Initialize Cohere client
-co = cohere.Client(os.getenv('COHERE_API_KEY'))
+# Initialize Gemini
+GEMINI_API_KEY = os.getenv('GEMINI_API_KEY')
+GEMINI_MODEL = os.getenv('GEMINI_MODEL', 'gemini-1.5-flash')
+if GEMINI_API_KEY:
+    genai.configure(api_key=GEMINI_API_KEY)
+else:
+    raise RuntimeError('GEMINI_API_KEY not set in environment')
 
 # Twilio configuration
 TWILIO_ACCOUNT_SID = os.getenv('TWILIO_ACCOUNT_SID')
@@ -38,6 +43,18 @@ TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER')
 # Backend API configuration
 BACKEND_API_URL = os.getenv('BACKEND_API_URL', 'http://localhost:5000')
 BACKEND_API_KEY = os.getenv('BACKEND_API_KEY')
+
+# FAQ context: Add your FAQ or allowed queries here
+CONTEXT_FAQ = '''
+FAQ Reference:
+1. What are your business hours?\nWe are open 24/7.
+2. How can I contact support?\nYou can contact support via the Help page or by emailing support@example.com.
+3. Where are you located?\nWe are an online business serving customers worldwide.
+4. What services do you offer?\nWe offer chatbot solutions, integrations, and analytics for businesses.
+5. How do I reset my password?\nGo to the Login page and click on "Forgot Password".
+
+You are a helpful customer support assistant. Use the FAQ above as a reference when relevant, but feel free to provide helpful, friendly responses to any customer questions. Be conversational and helpful even if the exact question isn't in the FAQ. If you don't know something specific, suggest contacting support or provide general guidance.
+'''
 
 class CustomerSupportAgent:
     def __init__(self):
@@ -110,7 +127,7 @@ class CustomerSupportAgent:
             return None
         
     def generate_response(self, user_message, phone_number, business_id=None):
-        """Generate AI response using Cohere with business-specific context"""
+        """Generate AI response using Gemini with business-specific context"""
         try:
             logger.info(f"Generating AI response for {phone_number} (business: {business_id}): {user_message[:50]}...")
             
@@ -135,20 +152,12 @@ class CustomerSupportAgent:
             # Get conversation history for this user
             history = self.conversation_history.get(phone_number, [])
             
-            # Prepare messages for Cohere
-            messages = []
-            if history:
-                messages.extend(history)
-            messages.append({"role": "user", "message": user_message})
+            # Combine context and user message
+            prompt = context + "\n\nCustomer: " + user_message
             
-            # Generate response using Cohere
-            response = co.chat(
-                message=user_message,
-                conversation_id=f"{business_id}_{phone_number}" if business_id else phone_number,
-                temperature=0.7,
-                max_tokens=200
-            )
-            
+            # Generate response using Gemini
+            model = genai.GenerativeModel(GEMINI_MODEL)
+            response = model.generate_content(prompt)
             ai_response = response.text
             logger.info(f"AI response generated for {phone_number}: {ai_response[:50]}...")
             
@@ -205,6 +214,26 @@ class CustomerSupportAgent:
                     
         except Exception as e:
             logger.error(f"Error saving conversation: {str(e)}")
+
+    def generate_faq_response(self, question):
+        """Generate FAQ response using Gemini with FAQ context"""
+        try:
+            logger.info(f"Generating FAQ response for: {question[:50]}...")
+            
+            # Include FAQ context in the message itself
+            contextualized_question = f"""You are a helpful customer support assistant. Use the FAQ reference below when relevant, but provide helpful responses to any questions:\n\n{CONTEXT_FAQ}\n\nCustomer Question: {question}\n\nPlease provide a helpful, friendly response. If the question relates to the FAQ, use that information. If not, still try to be helpful and suggest contacting support if needed."""
+            
+            model = genai.GenerativeModel(GEMINI_MODEL)
+            response = model.generate_content(contextualized_question)
+            ai_response = response.text
+            logger.info(f"FAQ response generated: {ai_response[:50]}...")
+            
+            return ai_response
+            
+        except Exception as e:
+            error_msg = f"Error generating FAQ response: {str(e)}"
+            logger.error(error_msg)
+            return "I apologize, but I'm having trouble processing your FAQ request right now. Please try again in a moment."
 
 # Initialize the agent
 agent = CustomerSupportAgent()
@@ -329,6 +358,37 @@ def get_messages():
             })
     except FileNotFoundError:
         return jsonify({"messages": [], "total_messages": 0})
+
+@app.route('/ai-response', methods=['POST'])
+def ai_response():
+    data = request.get_json()
+    message = data.get('message', '')
+    if not message:
+        return jsonify({'reply': 'No message provided.'}), 400
+    try:
+        # Generate response using Cohere
+        ai_reply = agent.generate_response(message, phone_number='whatsapp', business_id=None)
+        return jsonify({'reply': ai_reply})
+    except Exception as e:
+        return jsonify({'reply': f'Error: {str(e)}'}), 500
+
+@app.route('/faq', methods=['POST'])
+def faq():
+    """FAQ endpoint for handling FAQ questions"""
+    try:
+        data = request.get_json()
+        question = data.get('question')
+        if not question:
+            return jsonify({'error': 'Missing question'}), 400
+        
+        # Generate FAQ response
+        answer = agent.generate_faq_response(question)
+        
+        return jsonify({'answer': answer})
+        
+    except Exception as e:
+        logger.error(f"Error in FAQ endpoint: {str(e)}")
+        return jsonify({'error': 'Internal server error'}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=int(os.getenv('PORT', 8000))) 

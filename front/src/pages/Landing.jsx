@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowRightIcon, PlayIcon, CheckCircleIcon } from '@heroicons/react/24/outline'
+import { useLanguage } from '../contexts/LanguageContext'
 
 const features = [
   { title: 'Multi-Channel Support', description: 'Connect WhatsApp, Facebook, Instagram, and more' },
@@ -14,13 +15,6 @@ const testimonials = [
   { name: 'Sarah Johnson', role: 'CEO, TechStart', content: 'Our customer support improved by 300% after implementing ChatBot Platform.' },
   { name: 'Mike Chen', role: 'Marketing Director', content: 'The analytics helped us understand our customers better than ever.' },
   { name: 'Emily Davis', role: 'Customer Success', content: 'Setting up our first bot took less than 10 minutes. Incredible!' },
-]
-
-const featuredLogos = [
-  { src: 'https://upload.wikimedia.org/wikipedia/commons/6/69/Product_Hunt_Logo.png', alt: 'Product Hunt' },
-  { src: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/TechCrunch_Logo.svg', alt: 'TechCrunch' },
-  { src: 'https://upload.wikimedia.org/wikipedia/commons/6/62/Indie_Hackers_logo.png', alt: 'Indie Hackers' },
-  { src: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/Hacker_News_logo.png', alt: 'Hacker News' },
 ]
 
 // Modern SVG illustration for hero
@@ -53,6 +47,57 @@ const faqs = [
 ]
 
 export default function Landing() {
+  const { t, isRTL, language, changeLanguage } = useLanguage()
+  
+  const features = [
+    { title: t('multiChannelSupport'), description: t('multiChannelSupportDesc') },
+    { title: t('aiPoweredResponses'), description: t('aiPoweredResponsesDesc') },
+    { title: t('analyticsDashboard'), description: t('analyticsDashboardDesc') },
+    { title: t('easyIntegration'), description: t('easyIntegrationDesc') },
+  ]
+
+  const testimonials = [
+    { name: t('sarahJohnson'), role: t('ceoTechstart'), content: t('sarahTestimonial') },
+    { name: t('mikeChen'), role: t('marketingDirector'), content: t('mikeTestimonial') },
+    { name: t('emilyDavis'), role: t('customerSuccess'), content: t('emilyTestimonial') },
+  ]
+
+  const featuredLogos = [
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/6/69/Product_Hunt_Logo.png', alt: t('productHunt') },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/4/4e/TechCrunch_Logo.svg', alt: t('techCrunch') },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/6/62/Indie_Hackers_logo.png', alt: t('indieHackers') },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/6/6b/Hacker_News_logo.png', alt: t('hackerNews') },
+  ]
+
+  // Modern SVG illustration for hero
+  const HeroSVG = () => (
+    <svg width="420" height="260" viewBox="0 0 420 260" fill="none" xmlns="http://www.w3.org/2000/svg" className="mx-auto mb-8 w-full max-w-lg animate-fadein">
+      <ellipse cx="210" cy="230" rx="180" ry="25" fill="#8B5CF6" fillOpacity="0.10" />
+      <rect x="80" y="60" width="260" height="100" rx="36" fill="#fff" />
+      <ellipse cx="150" cy="110" rx="18" ry="18" fill="#8B5CF6" />
+      <ellipse cx="270" cy="110" rx="18" ry="18" fill="#8B5CF6" />
+      <rect x="170" y="140" width="80" height="14" rx="7" fill="#E5E7EB" />
+      <rect x="190" y="170" width="40" height="8" rx="4" fill="#E5E7EB" />
+      <rect x="200" y="40" width="20" height="28" rx="10" fill="#8B5CF6" />
+      <rect x="120" y="190" width="180" height="18" rx="9" fill="#8B5CF6" fillOpacity="0.15" />
+    </svg>
+  )
+
+  const trustLogos = [
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/4/44/Microsoft_logo.svg', alt: 'Microsoft' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg', alt: 'Google' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg', alt: 'Netflix' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/5/51/Facebook_f_logo_%282019%29.svg', alt: 'Facebook' },
+    { src: 'https://upload.wikimedia.org/wikipedia/commons/6/6e/Amazon_logo.svg', alt: 'Amazon' },
+  ]
+
+  const faqs = [
+    { q: t('whatIsChatbotPlatform'), a: t('whatIsChatbotPlatformAnswer') },
+    { q: t('isThereFreeTrial'), a: t('isThereFreeTrialAnswer') },
+    { q: t('canIntegrateWithTools'), a: t('canIntegrateWithToolsAnswer') },
+    { q: t('isDataSecure'), a: t('isDataSecureAnswer') },
+  ]
+
   const [email, setEmail] = useState('')
   const [isSubscribed, setIsSubscribed] = useState(false)
   const [showDemo, setShowDemo] = useState(false)
@@ -91,10 +136,10 @@ export default function Landing() {
 
   const validateContact = () => {
     const errs = {}
-    if (!contactForm.name) errs.name = 'Name is required.'
-    if (!contactForm.email) errs.email = 'Email is required.'
-    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contactForm.email)) errs.email = 'Invalid email.'
-    if (!contactForm.message) errs.message = 'Message is required.'
+    if (!contactForm.name) errs.name = t('nameRequired')
+    if (!contactForm.email) errs.email = t('emailRequired')
+    else if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(contactForm.email)) errs.email = t('invalidEmail')
+    if (!contactForm.message) errs.message = t('messageRequired')
     return errs
   }
 
@@ -108,7 +153,7 @@ export default function Landing() {
       setContactLoading(false)
       setContactModal(false)
       setContactForm({ name: '', email: '', message: '' })
-      setContactToast('Message sent!')
+      setContactToast(t('messageSent'))
       setTimeout(() => setContactToast(''), 2000)
     }, 1200)
   }
@@ -124,32 +169,32 @@ export default function Landing() {
       case 'demo':
         return (
           <div>
-            <h2 className="text-2xl font-bold text-white mb-4">Live Demo</h2>
+            <h2 className="text-2xl font-bold text-white mb-4">{t('liveDemo')}</h2>
             <div className="bg-gray-700 rounded-lg p-4 flex items-center justify-center mb-4" style={{ minHeight: 200 }}>
-              <span className="text-gray-400">[Demo video or interactive demo would appear here]</span>
+              <span className="text-gray-400">{t('demoPlaceholder')}</span>
             </div>
-            <p className="text-gray-300">Experience the chatbot platform in action. (This is a placeholder for a real demo.)</p>
+            <p className="text-gray-300">{t('demoDescription')}</p>
           </div>
         )
       case 'about':
         return (
           <div>
-            <h2 className="text-2xl font-bold text-white mb-4">About ChatBot Platform</h2>
-            <p className="text-gray-300">ChatBot Platform is dedicated to building the future of customer engagement with AI-powered chatbots. (This is a placeholder for About content.)</p>
+            <h2 className="text-2xl font-bold text-white mb-4">{t('aboutChatbotPlatform')}</h2>
+            <p className="text-gray-300">{t('aboutDescription')}</p>
           </div>
         )
       case 'privacy':
         return (
           <div>
-            <h2 className="text-2xl font-bold text-white mb-4">Privacy Policy</h2>
-            <p className="text-gray-300">Your privacy is important to us. (This is a placeholder for the privacy policy.)</p>
+            <h2 className="text-2xl font-bold text-white mb-4">{t('privacyPolicy')}</h2>
+            <p className="text-gray-300">{t('privacyDescription')}</p>
           </div>
         )
       case 'terms':
         return (
           <div>
-            <h2 className="text-2xl font-bold text-white mb-4">Terms of Service</h2>
-            <p className="text-gray-300">Please read our terms of service. (This is a placeholder for the terms of service.)</p>
+            <h2 className="text-2xl font-bold text-white mb-4">{t('termsOfService')}</h2>
+            <p className="text-gray-300">{t('termsDescription')}</p>
           </div>
         )
       default:
@@ -173,8 +218,27 @@ export default function Landing() {
     return () => clearTimeout(testimonialTimeout.current)
   }, [testimonialIdx])
 
+  // Language Switcher component
+  const LanguageSwitcher = () => (
+    <div className="fixed top-4 right-4 z-50 flex gap-2">
+      <button
+        onClick={() => changeLanguage('en')}
+        className={`px-3 py-1 rounded-lg font-semibold transition border border-gray-600 bg-gray-800 text-white hover:bg-purple-600 ${language === 'en' ? 'bg-purple-600 border-purple-700' : ''}`}
+      >
+        English
+      </button>
+      <button
+        onClick={() => changeLanguage('ar')}
+        className={`px-3 py-1 rounded-lg font-semibold transition border border-gray-600 bg-gray-800 text-white hover:bg-purple-600 ${language === 'ar' ? 'bg-purple-600 border-purple-700' : ''}`}
+      >
+        العربية
+      </button>
+    </div>
+  )
+
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col relative">
+    <div className={`min-h-screen bg-gray-900 flex flex-col relative ${isRTL ? 'text-right' : 'text-left'}`}>
+      <LanguageSwitcher />
       {/* Animated gradient background for hero */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <div className="absolute -top-32 -left-32 w-96 h-96 bg-gradient-to-tr from-purple-600 via-indigo-500 to-pink-500 opacity-30 rounded-full blur-3xl animate-pulse" />
@@ -184,36 +248,28 @@ export default function Landing() {
       <section className="relative overflow-hidden z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-8">
           <div className="text-center">
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 animate-fadein">Build Amazing
-              <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent"> Chatbots</span>
+            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 animate-fadein">
+              {t('buildAmazing')}
+              <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent"> {t('chatbots')}</span>
             </h1>
-            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto animate-fadein">Create intelligent, AI-powered chatbots that engage customers across all channels. Boost your business with automated conversations that feel human.</p>
+            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto animate-fadein">{t('heroDescription')}</p>
             <HeroSVG />
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link 
                 to="/login" 
                 className="inline-flex items-center gap-2 px-8 py-4 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition shadow-lg focus:outline-none focus:ring-2 focus:ring-purple-500 animate-bounce-on-hover"
               >
-                Get Started Free
+                {t('getStartedFree')}
                 <ArrowRightIcon className="h-5 w-5 transition-transform group-hover:translate-x-1" />
               </Link>
               <button 
                 onClick={handleDemoClick}
-                disabled={showDemo}
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-700 transition border border-gray-600 focus:outline-none focus:ring-2 focus:ring-purple-500 animate-bounce-on-hover"
+                className={`inline-flex items-center gap-2 px-8 py-4 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-700 transition shadow-lg focus:outline-none focus:ring-2 focus:ring-gray-500 ${showDemo ? 'animate-pulse' : ''}`}
               >
-                {showDemo ? 'Loading...' : (<><PlayIcon className="h-5 w-5 transition-transform group-hover:scale-110" />Watch Demo</>)}
+                <PlayIcon className="h-5 w-5" />
+                {t('watchDemo')}
               </button>
             </div>
-          </div>
-        </div>
-        {/* Featured On bar */}
-        <div className="max-w-4xl mx-auto px-4 flex flex-col items-center mt-8 mb-2">
-          <span className="text-gray-400 text-xs mb-2">Featured on (demo logos)</span>
-          <div className="flex flex-wrap gap-8 justify-center items-center">
-            {featuredLogos.map((logo, i) => (
-              <img key={i} src={logo.src} alt={logo.alt} className="h-7 opacity-70 hover:opacity-100 transition" loading="lazy" />
-            ))}
           </div>
         </div>
       </section>
@@ -228,10 +284,8 @@ export default function Landing() {
               <circle cx="28" cy="28" r="27" stroke="#8B5CF6" strokeWidth="2" fill="none" />
             </svg>
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">What is ChatBot Platform?</h2>
-          <p className="text-gray-300 text-base md:text-lg max-w-2xl">
-            ChatBot Platform is a web-based tool for building, testing, and managing simple AI-powered chatbots. It's designed for small businesses, teams, and individuals who want to automate basic customer conversations or FAQs without coding. You can create bots, connect them to channels, and view basic analytics. This is a demo project—some features are simulated and not connected to real messaging platforms or payment systems.
-          </p>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">{t('whatIsChatbotPlatform')}</h2>
+          <p className="text-gray-300 text-base md:text-lg max-w-2xl">{t('whatIsChatbotPlatformIntro')}</p>
         </div>
       </section>
 
@@ -239,8 +293,8 @@ export default function Landing() {
       <section className="py-16 bg-gray-900 border-b border-gray-800">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-white mb-4">How it Works</h2>
-            <p className="text-lg text-gray-300">Get started in just a few simple steps</p>
+            <h2 className="text-3xl font-bold text-white mb-4">{t('howItWorks')}</h2>
+            <p className="text-lg text-gray-300">{t('howItWorksDesc')}</p>
           </div>
           <div className="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-12">
             {/* Step 1 */}
@@ -248,32 +302,32 @@ export default function Landing() {
               <div className="bg-purple-600/20 rounded-full p-4 mb-3">
                 <svg width="36" height="36" fill="none" viewBox="0 0 36 36"><circle cx="18" cy="18" r="18" fill="#8B5CF6" fillOpacity="0.15"/><path d="M18 10a4 4 0 1 1 0 8 4 4 0 0 1 0-8zm0 10c4.418 0 8 1.79 8 4v2H10v-2c0-2.21 3.582-4 8-4z" fill="#8B5CF6"/></svg>
               </div>
-              <div className="font-semibold text-white text-lg mb-1">Sign Up</div>
-              <div className="text-gray-400 text-sm">Create your free account in seconds—no credit card required.</div>
+              <div className="font-semibold text-white text-lg mb-1">{t('signUp')}</div>
+              <div className="text-gray-400 text-sm">{t('signUpDesc')}</div>
             </div>
             {/* Step 2 */}
             <div className="flex flex-col items-center text-center max-w-xs animate-fadein" style={{ animationDelay: '0.1s' }}>
               <div className="bg-purple-600/20 rounded-full p-4 mb-3">
                 <svg width="36" height="36" fill="none" viewBox="0 0 36 36"><circle cx="18" cy="18" r="18" fill="#8B5CF6" fillOpacity="0.15"/><path d="M12 24v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="18" cy="14" r="4" stroke="#8B5CF6" strokeWidth="2"/></svg>
               </div>
-              <div className="font-semibold text-white text-lg mb-1">Create a Bot</div>
-              <div className="text-gray-400 text-sm">Set up your first chatbot with a simple, guided form.</div>
+              <div className="font-semibold text-white text-lg mb-1">{t('createBot')}</div>
+              <div className="text-gray-400 text-sm">{t('createBotDesc')}</div>
             </div>
             {/* Step 3 */}
             <div className="flex flex-col items-center text-center max-w-xs animate-fadein" style={{ animationDelay: '0.2s' }}>
               <div className="bg-purple-600/20 rounded-full p-4 mb-3">
                 <svg width="36" height="36" fill="none" viewBox="0 0 36 36"><circle cx="18" cy="18" r="18" fill="#8B5CF6" fillOpacity="0.15"/><path d="M12 18h12M18 12v12" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round"/></svg>
               </div>
-              <div className="font-semibold text-white text-lg mb-1">Connect a Channel</div>
-              <div className="text-gray-400 text-sm">Link your bot to a channel (like WhatsApp or Facebook) in a few clicks.</div>
+              <div className="font-semibold text-white text-lg mb-1">{t('connectChannel')}</div>
+              <div className="text-gray-400 text-sm">{t('connectChannelDesc')}</div>
             </div>
             {/* Step 4 */}
             <div className="flex flex-col items-center text-center max-w-xs animate-fadein" style={{ animationDelay: '0.3s' }}>
               <div className="bg-purple-600/20 rounded-full p-4 mb-3">
                 <svg width="36" height="36" fill="none" viewBox="0 0 36 36"><circle cx="18" cy="18" r="18" fill="#8B5CF6" fillOpacity="0.15"/><path d="M12 24h12M12 18h12M12 12h12" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round"/></svg>
               </div>
-              <div className="font-semibold text-white text-lg mb-1">View Analytics</div>
-              <div className="text-gray-400 text-sm">Track conversations and see basic stats in your dashboard.</div>
+              <div className="font-semibold text-white text-lg mb-1">{t('viewAnalytics')}</div>
+              <div className="text-gray-400 text-sm">{t('viewAnalyticsDesc')}</div>
             </div>
           </div>
         </div>
@@ -282,8 +336,8 @@ export default function Landing() {
       {/* Live Demo Preview Section */}
       <section className="py-16 bg-gray-950 border-b border-gray-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center">
-          <h2 className="text-3xl font-bold text-white mb-6">Live Demo Preview</h2>
-          <p className="text-gray-300 mb-8 text-center max-w-2xl">See what a chatbot conversation could look like. This is a static preview for demo purposes only.</p>
+          <h2 className="text-3xl font-bold text-white mb-6">{t('liveDemoPreview')}</h2>
+          <p className="text-gray-300 mb-8 text-center max-w-2xl">{t('liveDemoPreviewDesc')}</p>
           <div className="w-full max-w-md bg-gray-800 rounded-2xl shadow-xl border border-gray-700 p-6 flex flex-col gap-2 animate-fadein">
             <div className="flex items-center gap-2 mb-2">
               <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-purple-500 via-purple-400 to-indigo-400 flex items-center justify-center font-bold text-white">B</div>
@@ -291,15 +345,17 @@ export default function Landing() {
               <span className="ml-auto text-xs text-green-400">Online</span>
             </div>
             <div className="flex flex-col gap-2 text-sm">
-              <div className="self-start bg-gray-700 text-white px-4 py-2 rounded-2xl rounded-bl-sm max-w-[80%]">Hi! How can I help you today?</div>
-              <div className="self-end bg-purple-600 text-white px-4 py-2 rounded-2xl rounded-br-sm max-w-[80%]">What are your business hours?</div>
-              <div className="self-start bg-gray-700 text-white px-4 py-2 rounded-2xl rounded-bl-sm max-w-[80%]">We're available Mon–Fri, 9am–6pm.</div>
+              <div className="self-start bg-gray-700 text-white px-4 py-2 rounded-2xl rounded-bl-sm max-w-[80%]">{t('demoBotMsg1')}</div>
+              <div className="self-end bg-purple-600 text-white px-4 py-2 rounded-2xl rounded-br-sm max-w-[80%]">{t('demoUserMsg1')}</div>
+              <div className="self-start bg-gray-700 text-white px-4 py-2 rounded-2xl rounded-bl-sm max-w-[80%]">{t('demoBotMsg2')}</div>
+              <div className="self-end bg-purple-600 text-white px-4 py-2 rounded-2xl rounded-br-sm max-w-[80%]">{t('demoUserMsg2')}</div>
+              <div className="self-start bg-gray-700 text-white px-4 py-2 rounded-2xl rounded-bl-sm max-w-[80%]">{t('demoBotMsg3')}</div>
               <div className="self-end bg-purple-600 text-white px-4 py-2 rounded-2xl rounded-br-sm max-w-[80%]">Thanks!</div>
               <div className="self-start bg-gray-700 text-white px-4 py-2 rounded-2xl rounded-bl-sm max-w-[80%]">You're welcome! 😊</div>
             </div>
             <div className="mt-4 flex items-center gap-2">
-              <input type="text" disabled placeholder="Type a message..." className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-400 placeholder-gray-500 text-sm" />
-              <button disabled className="bg-purple-600 text-white px-4 py-2 rounded-lg opacity-60 cursor-not-allowed">Send</button>
+              <input type="text" disabled placeholder={t('typeMessagePlaceholder')} className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-gray-400 placeholder-gray-500 text-sm" />
+              <button disabled className="bg-purple-600 text-white px-4 py-2 rounded-lg opacity-60 cursor-not-allowed">{t('send')}</button>
             </div>
           </div>
         </div>
@@ -309,24 +365,24 @@ export default function Landing() {
       <section className="py-16 bg-gray-900 border-b border-gray-800">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-white mb-4">Use Cases</h2>
-            <p className="text-lg text-gray-300">How you can use ChatBot Platform</p>
+            <h2 className="text-3xl font-bold text-white mb-4">{t('useCases')}</h2>
+            <p className="text-lg text-gray-300">{t('useCasesDesc')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col items-center text-center animate-fadein">
               <svg width="36" height="36" fill="none" viewBox="0 0 36 36" className="mb-3"><circle cx="18" cy="18" r="18" fill="#8B5CF6" fillOpacity="0.15"/><path d="M12 18h12M18 12v12" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round"/></svg>
-              <div className="font-semibold text-white text-lg mb-1">Answer FAQs</div>
-              <div className="text-gray-400 text-sm">Automate responses to common customer questions, 24/7.</div>
+              <div className="font-semibold text-white text-lg mb-1">{t('answerFaqs')}</div>
+              <div className="text-gray-400 text-sm">{t('answerFaqsDesc')}</div>
             </div>
             <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col items-center text-center animate-fadein" style={{ animationDelay: '0.1s' }}>
               <svg width="36" height="36" fill="none" viewBox="0 0 36 36" className="mb-3"><circle cx="18" cy="18" r="18" fill="#8B5CF6" fillOpacity="0.15"/><path d="M12 24v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/><circle cx="18" cy="14" r="4" stroke="#8B5CF6" strokeWidth="2"/></svg>
-              <div className="font-semibold text-white text-lg mb-1">Qualify Leads</div>
-              <div className="text-gray-400 text-sm">Collect info from website visitors and route them to your team.</div>
+              <div className="font-semibold text-white text-lg mb-1">{t('qualifyLeads')}</div>
+              <div className="text-gray-400 text-sm">{t('qualifyLeadsDesc')}</div>
             </div>
             <div className="bg-gray-800 rounded-xl border border-gray-700 p-6 flex flex-col items-center text-center animate-fadein" style={{ animationDelay: '0.2s' }}>
               <svg width="36" height="36" fill="none" viewBox="0 0 36 36" className="mb-3"><circle cx="18" cy="18" r="18" fill="#8B5CF6" fillOpacity="0.15"/><path d="M12 12h12M12 18h12M12 24h12" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round"/></svg>
-              <div className="font-semibold text-white text-lg mb-1">Automate Support</div>
-              <div className="text-gray-400 text-sm">Handle basic support requests instantly, freeing up your team.</div>
+              <div className="font-semibold text-white text-lg mb-1">{t('automateSupport')}</div>
+              <div className="text-gray-400 text-sm">{t('automateSupportDesc')}</div>
             </div>
           </div>
         </div>
@@ -336,36 +392,36 @@ export default function Landing() {
       <section className="py-16 bg-gray-950 border-b border-gray-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-white mb-4">Why Choose Us?</h2>
-            <p className="text-lg text-gray-300">A few honest reasons to try ChatBot Platform</p>
+            <h2 className="text-3xl font-bold text-white mb-4">{t('whyChooseUs')}</h2>
+            <p className="text-lg text-gray-300">{t('whyChooseUsDesc')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="flex items-start gap-4 animate-fadein">
               <span className="mt-1"><svg width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#8B5CF6" fillOpacity="0.15"/><path d="M7 13l3 3 7-7" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
               <div>
-                <div className="font-semibold text-white mb-1">No coding required</div>
-                <div className="text-gray-400 text-sm">Anyone can build a bot with our simple interface.</div>
+                <div className="font-semibold text-white mb-1">{t('noCoding')}</div>
+                <div className="text-gray-400 text-sm">{t('noCodingDesc')}</div>
               </div>
             </div>
             <div className="flex items-start gap-4 animate-fadein" style={{ animationDelay: '0.1s' }}>
               <span className="mt-1"><svg width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#8B5CF6" fillOpacity="0.15"/><path d="M7 13l3 3 7-7" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
               <div>
-                <div className="font-semibold text-white mb-1">Simple analytics</div>
-                <div className="text-gray-400 text-sm">See basic stats about your bots and conversations.</div>
+                <div className="font-semibold text-white mb-1">{t('simpleAnalytics')}</div>
+                <div className="text-gray-400 text-sm">{t('simpleAnalyticsDesc')}</div>
               </div>
             </div>
             <div className="flex items-start gap-4 animate-fadein" style={{ animationDelay: '0.2s' }}>
               <span className="mt-1"><svg width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#8B5CF6" fillOpacity="0.15"/><path d="M7 13l3 3 7-7" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
               <div>
-                <div className="font-semibold text-white mb-1">Quick setup</div>
-                <div className="text-gray-400 text-sm">Get started in minutes with our guided flow.</div>
+                <div className="font-semibold text-white mb-1">{t('quickSetup')}</div>
+                <div className="text-gray-400 text-sm">{t('quickSetupDesc')}</div>
               </div>
             </div>
             <div className="flex items-start gap-4 animate-fadein" style={{ animationDelay: '0.3s' }}>
               <span className="mt-1"><svg width="24" height="24" fill="none" viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#8B5CF6" fillOpacity="0.15"/><path d="M7 13l3 3 7-7" stroke="#8B5CF6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/></svg></span>
               <div>
-                <div className="font-semibold text-white mb-1">Free to try</div>
-                <div className="text-gray-400 text-sm">No payment required to explore the platform.</div>
+                <div className="font-semibold text-white mb-1">{t('freeToTry')}</div>
+                <div className="text-gray-400 text-sm">{t('freeToTryDesc')}</div>
               </div>
             </div>
           </div>
@@ -375,7 +431,7 @@ export default function Landing() {
       {/* Accessibility Statement */}
       <section className="py-6 bg-gray-900 border-b border-gray-800">
         <div className="max-w-3xl mx-auto px-4 text-center">
-          <span className="text-gray-400 text-sm">We care about accessibility. This demo aims to be usable by everyone. If you have feedback, <a href="mailto:info@chatbot.com" className="text-purple-400 underline">let us know</a>.</span>
+          <span className="text-gray-400 text-sm">{t('accessibilityStatement')} <a href="mailto:info@chatbot.com" className="text-purple-400 underline">{t('letUsKnow')}</a>.</span>
         </div>
       </section>
 
@@ -383,8 +439,8 @@ export default function Landing() {
       <section className="py-20 bg-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Everything You Need</h2>
-            <p className="text-xl text-gray-300">Powerful features to create the perfect chatbot experience</p>
+            <h2 className="text-4xl font-bold text-white mb-4">{t('everythingYouNeed')}</h2>
+            <p className="text-xl text-gray-300">{t('everythingYouNeedDesc')}</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {features.map((feature, index) => (
@@ -401,8 +457,8 @@ export default function Landing() {
       <section className="py-20 bg-gray-900 border-b border-gray-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Loved by Businesses</h2>
-            <p className="text-xl text-gray-300">See what our customers are saying</p>
+            <h2 className="text-4xl font-bold text-white mb-4">{t('lovedByBusinesses')}</h2>
+            <p className="text-xl text-gray-300">{t('lovedByBusinessesDesc')}</p>
           </div>
           <div className="relative max-w-2xl mx-auto">
             <div className="bg-gray-800 p-8 rounded-xl border border-gray-700 animate-fadein flex flex-col items-center text-center min-h-[200px]">
@@ -432,8 +488,8 @@ export default function Landing() {
       <section className="py-16 bg-gray-900 border-t border-gray-800">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-white mb-4">Frequently Asked Questions</h2>
-            <p className="text-lg text-gray-300">Answers to common questions about ChatBot Platform</p>
+            <h2 className="text-3xl font-bold text-white mb-4">{t('faq')}</h2>
+            <p className="text-lg text-gray-300">{t('faqDesc')}</p>
           </div>
           <div className="space-y-4">
             {faqs.map((faq, i) => (
@@ -463,36 +519,36 @@ export default function Landing() {
       {/* CTA Section */}
       <section className="py-20 bg-gray-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-4xl font-bold text-white mb-4">Ready to Get Started?</h2>
+          <h2 className="text-4xl font-bold text-white mb-4">{t('readyToStart')}</h2>
           <p className="text-xl text-gray-300 mb-8">
-            Join thousands of businesses using ChatBot Platform to improve customer engagement
+            {t('ctaDescription')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
             <Link 
               to="/login" 
               className="inline-flex items-center gap-2 px-8 py-4 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition"
             >
-              Start Free Trial
+              {t('startFreeTrial')}
               <ArrowRightIcon className="h-5 w-5" />
             </Link>
             <button 
               onClick={handleContactSales}
               className="inline-flex items-center gap-2 px-8 py-4 bg-gray-700 text-white rounded-lg font-semibold hover:bg-gray-600 transition border border-gray-600"
             >
-              Contact Sales
+              {t('contactSales')}
             </button>
           </div>
           
           {/* Newsletter Signup */}
           <div className="bg-gray-700 p-6 rounded-xl border border-gray-600">
-            <h3 className="text-xl font-semibold text-white mb-2">Stay Updated</h3>
-            <p className="text-gray-300 mb-4">Get the latest updates and tips for chatbot success</p>
+            <h3 className="text-xl font-semibold text-white mb-2">{t('stayUpdated')}</h3>
+            <p className="text-gray-300 mb-4">{t('stayUpdatedDesc')}</p>
             <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Enter your email"
+                placeholder={t('enterYourEmail')}
                 className="flex-1 px-4 py-2 bg-gray-600 border border-gray-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400"
                 required
               />
@@ -500,13 +556,13 @@ export default function Landing() {
                 type="submit"
                 className="px-6 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition"
               >
-                Subscribe
+                {t('subscribe')}
               </button>
             </form>
             {isSubscribed && (
               <div className="flex items-center gap-2 text-green-400 mt-2 justify-center">
                 <CheckCircleIcon className="h-5 w-5" />
-                Successfully subscribed!
+                {t('successfullySubscribed')}
               </div>
             )}
           </div>
@@ -527,39 +583,39 @@ export default function Landing() {
               className="absolute top-4 right-4 text-gray-400 hover:text-purple-400 text-xl"
               aria-label="Close contact modal"
             >&times;</button>
-            <h2 className="text-2xl font-bold text-white mb-6">Contact Sales</h2>
+            <h2 className="text-2xl font-bold text-white mb-6">{t('contactSales')}</h2>
             <form onSubmit={handleContactSubmit} className="space-y-4" aria-label="Contact sales form">
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Name</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t('name')}</label>
                 <input
                   type="text"
                   value={contactForm.name}
                   onChange={e => setContactForm({ ...contactForm, name: e.target.value })}
                   className={`w-full px-4 py-2 bg-gray-700 border ${contactErrors.name ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400`}
-                  placeholder="Your name"
+                  placeholder={t('yourName')}
                   aria-label="Name"
                 />
                 {contactErrors.name && <div className="text-red-400 text-xs mt-1" role="alert">{contactErrors.name}</div>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Email</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t('email')}</label>
                 <input
                   type="email"
                   value={contactForm.email}
                   onChange={e => setContactForm({ ...contactForm, email: e.target.value })}
                   className={`w-full px-4 py-2 bg-gray-700 border ${contactErrors.email ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400`}
-                  placeholder="you@email.com"
+                  placeholder={t('yourEmail')}
                   aria-label="Email"
                 />
                 {contactErrors.email && <div className="text-red-400 text-xs mt-1" role="alert">{contactErrors.email}</div>}
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1">Message</label>
+                <label className="block text-sm font-medium text-gray-300 mb-1">{t('message')}</label>
                 <textarea
                   value={contactForm.message}
                   onChange={e => setContactForm({ ...contactForm, message: e.target.value })}
                   className={`w-full px-4 py-2 bg-gray-700 border ${contactErrors.message ? 'border-red-500' : 'border-gray-600'} rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 text-white placeholder-gray-400`}
-                  placeholder="How can we help you?"
+                  placeholder={t('howCanWeHelp')}
                   rows={4}
                   aria-label="Message"
                 />
@@ -570,13 +626,13 @@ export default function Landing() {
                   type="button"
                   onClick={() => setContactModal(false)}
                   className="flex-1 py-2 bg-gray-700 text-gray-200 rounded-lg font-semibold hover:bg-gray-600 transition"
-                >Cancel</button>
+                >{t('cancel')}</button>
                 <button
                   type="submit"
                   className="flex-1 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition flex items-center justify-center gap-2"
                   disabled={contactLoading}
                   aria-busy={contactLoading}
-                >{contactLoading ? 'Sending...' : 'Send'}</button>
+                >{contactLoading ? t('sending') : t('send')}</button>
               </div>
             </form>
           </div>
@@ -593,10 +649,10 @@ export default function Landing() {
             <span className="text-lg font-extrabold text-white tracking-tight">ChatBot Platform</span>
           </div>
           <div className="flex gap-6 text-gray-400 text-sm">
-            <button onClick={() => handleFooterModal('about')} className="hover:text-purple-400 transition">About</button>
-            <button onClick={() => handleFooterModal('privacy')} className="hover:text-purple-400 transition">Privacy</button>
-            <button onClick={() => handleFooterModal('terms')} className="hover:text-purple-400 transition">Terms</button>
-            <a href="mailto:info@chatbot.com" className="hover:text-purple-400 transition">Contact</a>
+            <button onClick={() => handleFooterModal('about')} className="hover:text-purple-400 transition">{t('about')}</button>
+            <button onClick={() => handleFooterModal('privacy')} className="hover:text-purple-400 transition">{t('privacy')}</button>
+            <button onClick={() => handleFooterModal('terms')} className="hover:text-purple-400 transition">{t('terms')}</button>
+            <a href="mailto:info@chatbot.com" className="hover:text-purple-400 transition">{t('contact')}</a>
           </div>
           <div className="flex gap-4">
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="hover:text-purple-400 transition">
@@ -611,8 +667,8 @@ export default function Landing() {
           </div>
         </div>
         <div className="text-center text-gray-500 text-xs mt-4 flex flex-col items-center gap-1">
-          <span>&copy; {new Date().getFullYear()} ChatBot Platform. All rights reserved.</span>
-          <span className="inline-flex items-center gap-1 mt-1"><svg width="18" height="18" fill="none" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#8B5CF6" fillOpacity="0.15"/><rect x="3" y="3" width="5" height="5" rx="1" fill="#8B5CF6"/><rect x="10" y="3" width="5" height="5" rx="1" fill="#6366F1"/><rect x="3" y="10" width="5" height="5" rx="1" fill="#6366F1"/><rect x="10" y="10" width="5" height="5" rx="1" fill="#8B5CF6"/></svg> Built with <span className="font-semibold text-purple-400">React</span> & <span className="font-semibold text-indigo-400">Vite</span></span>
+          <span>&copy; {new Date().getFullYear()} {t('chatbotPlatform')}. {t('allRightsReserved')}</span>
+          <span className="inline-flex items-center gap-1 mt-1"><svg width="18" height="18" fill="none" viewBox="0 0 18 18"><rect width="18" height="18" rx="4" fill="#8B5CF6" fillOpacity="0.15"/><rect x="3" y="3" width="5" height="5" rx="1" fill="#8B5CF6"/><rect x="10" y="3" width="5" height="5" rx="1" fill="#6366F1"/><rect x="3" y="10" width="5" height="5" rx="1" fill="#6366F1"/><rect x="10" y="10" width="5" height="5" rx="1" fill="#8B5CF6"/></svg> {t('builtWith')} <span className="font-semibold text-purple-400">React</span> & <span className="font-semibold text-indigo-400">Vite</span></span>
         </div>
       </footer>
 
@@ -635,8 +691,8 @@ export default function Landing() {
       {showCtaBanner && (
         <div className="fixed bottom-0 left-0 w-full z-50 flex justify-center animate-fadein">
           <div className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-4 rounded-t-2xl shadow-2xl flex items-center gap-4 max-w-xl w-full mx-2 sm:mx-0">
-            <span className="font-semibold text-lg">Start your free trial now!</span>
-            <Link to="/login" className="ml-auto px-5 py-2 bg-white text-purple-700 rounded-lg font-bold shadow hover:bg-gray-100 transition animate-bounce-on-hover">Sign Up</Link>
+            <span className="font-semibold text-lg">{t('startYourFreeTrial')}</span>
+            <Link to="/login" className="ml-auto px-5 py-2 bg-white text-purple-700 rounded-lg font-bold shadow hover:bg-gray-100 transition animate-bounce-on-hover">{t('signUp')}</Link>
             <button onClick={() => setShowCtaBanner(false)} aria-label="Dismiss banner" className="ml-2 text-white/70 hover:text-white text-2xl leading-none focus:outline-none">&times;</button>
           </div>
         </div>
